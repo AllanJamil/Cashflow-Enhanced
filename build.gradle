@@ -1,0 +1,82 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
+plugins {
+    id 'org.springframework.boot' version '2.3.5.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id 'java'
+}
+
+group = 'com.project'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('testcontainersVersion', "1.14.3")
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.1'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.1'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.1'
+
+
+    implementation 'org.projectlombok:lombok'
+
+    //postgresql
+    runtimeOnly 'org.postgresql:postgresql'
+
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
+
+    testImplementation 'org.testcontainers:postgresql'
+
+    implementation 'com.sendgrid:sendgrid-java:4.6.7'
+
+    //custom validation
+    implementation 'org.passay:passay:1.0'
+    implementation 'com.google.guava:guava:23.0'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+//test logging
+tasks.withType(Test) {
+    testLogging {
+        testLogging.events.add(TestLogEvent.PASSED)
+        testLogging.events.add(TestLogEvent.FAILED)
+        testLogging.events.add(TestLogEvent.SKIPPED)
+        testLogging.exceptionFormat(TestExceptionFormat.FULL)
+        testLogging.showCauses(true)
+        testLogging.showExceptions(true)
+        testLogging.showStackTraces(true)
+    }
+}
