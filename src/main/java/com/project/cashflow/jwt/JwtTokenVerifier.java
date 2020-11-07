@@ -1,9 +1,7 @@
 package com.project.cashflow.jwt;
 
 import com.google.common.base.Strings;
-import com.project.cashflow.configuration.JwtConfiguration;
 import io.jsonwebtoken.*;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,10 +18,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
-public class JwtTokenVerifier extends OncePerRequestFilter {
 
-    private final JwtConfiguration jwtConfiguration;
+public class JwtTokenVerifier extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -31,17 +27,17 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
 
         String authorizationHeader = request.getHeader("Authorization");
 
-        if (Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader.startsWith(jwtConfiguration.getPrefix())) {
+        if (Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader.startsWith(JwtCredentials.prefix)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = authorizationHeader.replace(jwtConfiguration.getPrefix(), "");
+        String token = authorizationHeader.replace(JwtCredentials.prefix, "");
 
         try {
 
             Jws<Claims> claimsJws = Jwts.parserBuilder()
-                    .setSigningKey(jwtConfiguration.getSecretKey())
+                    .setSigningKey(JwtCredentials.secretKey)
                     .build()
                     .parseClaimsJws(token);
 

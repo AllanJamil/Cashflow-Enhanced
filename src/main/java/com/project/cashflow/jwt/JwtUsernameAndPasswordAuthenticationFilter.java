@@ -1,7 +1,6 @@
 package com.project.cashflow.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.cashflow.configuration.JwtConfiguration;
 import com.project.cashflow.domain.dto.UserDto;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +24,6 @@ import java.util.Date;
 public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
-    private final JwtConfiguration jwtConfiguration;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -63,8 +61,8 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                 .setSubject(authResult.getName())
                 .claim("authorities", authResult.getAuthorities())
                 .setIssuedAt(new Date())
-                .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfiguration.getTokenExpirationAfterDays())))
-                .signWith(jwtConfiguration.getSecretKey())
+                .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(JwtCredentials.tokenExpirationAfterDays)))
+                .signWith(JwtCredentials.secretKey)
                 .compact();
 
 
@@ -73,7 +71,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                 .build();
 
         response.getWriter().write(new ObjectMapper().writeValueAsString(userDto));
-        response.addHeader(jwtConfiguration.getAuthorizationHeader(), jwtConfiguration.getPrefix() + token);
+        response.addHeader(JwtCredentials.authorizationHeader, JwtCredentials.prefix + token);
 
     }
 }
