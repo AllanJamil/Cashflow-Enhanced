@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 public class ApplicationUserService implements UserDetailsService {
@@ -20,15 +22,21 @@ public class ApplicationUserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-
-        return new ApplicationUser(User.builder()
+        Set<User> users = Set.of(User.builder()
                 .email("allan@hotmail.com")
                 .password(passwordEncoder.encode("Hejlol123"))
-                .enabled(false)
-                .build());
+                .enabled(true)
+                .build(),
+                User.builder()
+                        .email("baby@hotmail.com")
+                        .password(passwordEncoder.encode("Hejlol123"))
+                        .enabled(true)
+                        .build()
+        );
 
-/*         return userRepository.findByEmail(username).map(ApplicationUser::new)
-                .orElseThrow(() -> new UsernameNotFoundException("Cant find account with the email: " + username));*/
+        User loggedInUser = users.stream().filter(user -> user.getEmail().equalsIgnoreCase(username)).findFirst().get();
+
+        return new ApplicationUser(loggedInUser);
 
     }
 }

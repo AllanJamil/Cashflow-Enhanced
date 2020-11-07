@@ -2,10 +2,7 @@ package com.project.cashflow.jwt;
 
 import com.google.common.base.Strings;
 import com.project.cashflow.configuration.JwtConfiguration;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -65,7 +62,10 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
             );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        } catch (JwtException e) {
+        } catch (ExpiredJwtException e) {
+            throw new IllegalStateException("Token has expired");
+        }
+        catch (JwtException e) {
             throw new IllegalStateException(String.format("Token %s cannot be trusted.", token));
         }
 
