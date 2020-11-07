@@ -24,8 +24,9 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew build
-      - uses: akhileshns/heroku-deploy@v3.6.8 # This is the action
+      - uses: akhileshns/heroku-deploy@v3.6.8
+      - name: Deploying to heroku
           with:
             heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-            heroku_app_name: "cashflow-v1-api" #Must be unique in Heroku
+            heroku_app_name: "cashflow-v1-api"
             heroku_email: ${{secrets.HEROKU_EMAIL}}
