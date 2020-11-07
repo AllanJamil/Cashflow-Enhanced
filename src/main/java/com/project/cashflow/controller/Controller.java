@@ -7,6 +7,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class Controller {
 
+    @GetMapping
+    public String firstPage() {
+        return "First page";
+    }
+
     @GetMapping("/hello")
     public String HelloWorld() {
         return "Hello World!";
