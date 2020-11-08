@@ -1,7 +1,6 @@
 package com.project.cashflow.auth;
 
 
-import com.project.cashflow.domain.User;
 import com.project.cashflow.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,8 +8,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +19,7 @@ public class ApplicationUserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        Set<User> users = Set.of(User.builder()
+/*        Set<User> users = Set.of(User.builder()
                 .email("allan@hotmail.com")
                 .password(passwordEncoder.encode("Hejlol123"))
                 .enabled(true)
@@ -35,8 +32,10 @@ public class ApplicationUserService implements UserDetailsService {
         );
 
         User loggedInUser = users.stream().filter(user -> user.getEmail().equalsIgnoreCase(username)).findFirst().get();
+        return new ApplicationUser(loggedInUser);*/
 
-        return new ApplicationUser(loggedInUser);
+        return userRepository.findByEmail(username).map(ApplicationUser::new)
+                .orElseThrow(() -> new UsernameNotFoundException("Cant find account with the email: " + username));
 
     }
 }

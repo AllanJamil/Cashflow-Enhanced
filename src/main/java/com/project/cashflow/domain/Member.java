@@ -19,7 +19,7 @@ import java.util.UUID;
 @Table(name = "members")
 public class Member extends BaseEntity {
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     @Size(min = 3, max = 30, message = "Name needs to have at least 3 and maximum 30 characters")
     private String name;
 

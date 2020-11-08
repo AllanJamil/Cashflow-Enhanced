@@ -2,6 +2,7 @@ package com.project.cashflow.jwt;
 
 import com.google.common.base.Strings;
 import io.jsonwebtoken.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
+@Slf4j
 public class JwtTokenVerifier extends OncePerRequestFilter {
 
     @Override
@@ -28,6 +29,7 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
         String authorizationHeader = request.getHeader("Authorization");
 
         if (Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader.startsWith(JwtCredentials.prefix)) {
+            log.warn("No JWT token in the header.");
             filterChain.doFilter(request, response);
             return;
         }

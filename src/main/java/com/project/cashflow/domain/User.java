@@ -12,6 +12,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,11 +37,11 @@ public class User extends BaseEntity{
 
     @Size(max = 10, message = "Can't save more than 10 members")
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
-    private List<Member> members;
+    private List<Member> members = new ArrayList<>();
 
 /*    @LazyCollection(LazyCollectionOption.FALSE)*/
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<Payment> payments;
+    private List<Payment> payments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     List<Token> tokens;
