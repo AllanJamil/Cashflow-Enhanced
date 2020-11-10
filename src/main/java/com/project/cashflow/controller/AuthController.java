@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RequiredArgsConstructor
 @RestController
@@ -28,5 +30,10 @@ public class AuthController {
         } catch (EntityExistsException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
+    }
+
+    @GetMapping
+    public void redirectToGoogle(HttpServletResponse response) throws IOException {
+        response.sendRedirect("www.google.com");
     }
 }

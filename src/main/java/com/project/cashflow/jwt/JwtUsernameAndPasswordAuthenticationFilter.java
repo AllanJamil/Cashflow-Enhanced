@@ -1,7 +1,6 @@
 package com.project.cashflow.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.cashflow.domain.dto.UserDto;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -65,12 +65,9 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                 .signWith(JwtCredentials.secretKey)
                 .compact();
 
+        Map<String, String> user = Map.of("email", authResult.getName());
 
-        UserDto userDto = UserDto.builder()
-                .email(authResult.getName())
-                .build();
-
-        response.getWriter().write(new ObjectMapper().writeValueAsString(userDto));
+        response.getWriter().write(new ObjectMapper().writeValueAsString(user));
         response.addHeader(JwtCredentials.authorizationHeader, JwtCredentials.prefix + token);
 
     }

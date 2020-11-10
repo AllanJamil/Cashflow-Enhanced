@@ -9,6 +9,7 @@ import lombok.Setter;
 import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -20,20 +21,28 @@ public class MemberDto {
     private String name;
 
     @Size(max = 50, message = "Member cannot have more than 50 bills")
-    private List<Bill> bills;
+    private List<BillDto> bills;
 
     @Builder
     public MemberDto(UUID id, String name, List<Bill> bills) {
         this.id = id;
         this.name = name;
-        this.bills = bills;
+        this.bills = bills
+                .stream()
+                .map(Bill::convertToDto)
+                .collect(Collectors.toList()
+                );
     }
 
     public Member convertToEntity() {
         return Member.builder()
                 .id(this.id)
                 .name(this.name)
-                .bills(this.bills)
+                .bills(this.bills
+                        .stream()
+                        .map(BillDto::convertToEntity)
+                        .collect(Collectors.toList())
+                )
                 .build();
     }
 }

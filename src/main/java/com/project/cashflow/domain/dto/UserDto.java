@@ -11,6 +11,7 @@ import lombok.Setter;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -23,10 +24,9 @@ public class UserDto {
     private String password;
 
     @Size(max = 10, message = "Can't save more than 10 members")
-    private List<Member> members;
+    private List<MemberDto> members;
 
-    private List<Payment> payments;
-
+    private List<PaymentDto> payments;
 
 
     @Builder
@@ -36,16 +36,28 @@ public class UserDto {
                    List<Payment> payments) {
         this.email = email;
         this.password = password;
-        this.members = members;
-        this.payments = payments;
+        this.members = members.stream()
+                .map(Member::convertToDto)
+                .collect(Collectors.toList());
+        this.payments = payments.stream()
+                .map(Payment::convertToDto)
+                .collect(Collectors.toList());
     }
 
     public User convertToEntity() {
         return User.builder()
                 .email(this.email)
                 .password(this.password)
-                .members(this.members)
-                .payments(this.payments)
+                .members(this.members
+                        .stream()
+                        .map(MemberDto::convertToEntity)
+                        .collect(Collectors.toList())
+                )
+                .payments(this.payments
+                        .stream()
+                        .map(PaymentDto::convertToEntity)
+                        .collect(Collectors.toList())
+                )
                 .build();
     }
 

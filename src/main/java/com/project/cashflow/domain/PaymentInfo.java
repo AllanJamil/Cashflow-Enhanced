@@ -5,10 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
-import javax.validation.constraints.Positive;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -32,13 +30,11 @@ public class PaymentInfo extends BaseEntity{
     @JoinColumn(nullable = false, updatable = false)
     private Payment payment;
 
-    @Positive
-    @Range(min = 0, message = "Income cannot be negative")
+
     @Column(nullable = false, updatable = false)
     private double income = 0;
 
     @Column(nullable = false, updatable = false)
-    @Range(min = 0, message = "Expenses cannot be less than 0")
     private double totalExpenses = 0;
 
     @Column(nullable = false, updatable = false)

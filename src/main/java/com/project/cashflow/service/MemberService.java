@@ -9,7 +9,6 @@ import com.project.cashflow.exception.TooManyMembersException;
 import com.project.cashflow.repository.MemberRepository;
 import com.project.cashflow.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
@@ -25,12 +24,8 @@ public class MemberService {
     private final UserRepository userRepository;
     private final String ILLEGAL_MEMBER = "HOUSEHOLD";
 
-    private String getCurrentUserEmail() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
-    }
-
     public Member createMember(@Valid Member member) throws EntityExistsException, TooManyMembersException, EntityNotFoundException {
-        String email = getCurrentUserEmail();
+        String email = CurrentRequest.getUserEmail();
         member.setName(member.getName().toUpperCase().trim());
 
         List<Member> members = this.memberRepository.findAllByUser_Email(email);
@@ -54,7 +49,7 @@ public class MemberService {
     public Member changeMemberName(@Valid Member member) throws EntityNotFoundException,
             IllegalMemberException {
 
-        String email = getCurrentUserEmail();
+        String email = CurrentRequest.getUserEmail();
 
         Member memberToUpdate = this.memberRepository.findByIdAndUser_Email(member.getId(), email)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find member with ID: " + member.getId()));
@@ -69,7 +64,7 @@ public class MemberService {
     }
 
     public String deleteMemberById(UUID memberId) throws EntityNotFoundException, IllegalMemberException {
-        String email = getCurrentUserEmail();
+        String email = CurrentRequest.getUserEmail();
 
         Member memberToDelete = this.memberRepository.findByIdAndUser_Email(memberId, email)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find a member with ID: " + memberId));
@@ -88,7 +83,7 @@ public class MemberService {
     }
 
     public List<Member> findAllMembersByUser() {
-        String email = getCurrentUserEmail();
+        String email =  CurrentRequest.getUserEmail();
         return memberRepository.findAllByUser_Email(email);
     }
 }

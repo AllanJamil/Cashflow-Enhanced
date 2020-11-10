@@ -11,6 +11,7 @@ import org.hibernate.validator.constraints.Range;
 import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -18,18 +19,18 @@ public class PaymentInfoDto {
 
     private UUID id;
 
-    private Member member;
+    private MemberDto member;
 
-    private List<Bill> payedBills;
+    private List<BillDto> payedBills;
 
     @Positive
     @Range(min = 0, message = "Income cannot be negative")
-    private double income = 0;
+    private double income;
 
     @Range(min = 0, message = "Expenses cannot be less than 0")
-    private double totalExpenses = 0;
+    private double totalExpenses;
 
-    private double leftOver = 0;
+    private double leftOver;
 
     @Builder
     public PaymentInfoDto(UUID id, Member member,
@@ -38,8 +39,10 @@ public class PaymentInfoDto {
                           double totalExpenses,
                           double leftOver) {
         this.id = id;
-        this.member = member;
-        this.payedBills = payedBills;
+        this.member = member.convertToDto();
+        this.payedBills = payedBills.stream()
+                .map(Bill::convertToDto)
+                .collect(Collectors.toList());
         this.income = income;
         this.totalExpenses = totalExpenses;
         this.leftOver = leftOver;
@@ -48,8 +51,12 @@ public class PaymentInfoDto {
     public PaymentInfo convertToEntity() {
         return PaymentInfo.builder()
                 .id(this.id)
-                .member(this.member)
-                .payedBills(this.payedBills)
+                .member(this.member.convertToEntity())
+                .payedBills(this.payedBills
+                        .stream()
+                        .map(BillDto::convertToEntity)
+                        .collect(Collectors.toList())
+                )
                 .income(this.income)
                 .totalExpenses(this.totalExpenses)
                 .leftOver(this.leftOver)

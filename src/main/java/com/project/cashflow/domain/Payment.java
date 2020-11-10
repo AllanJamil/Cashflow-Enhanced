@@ -23,21 +23,22 @@ public class Payment extends BaseEntity {
     @ManyToOne
     private User user;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, mappedBy = "payment")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "payment")
     private List<PaymentInfo> paymentInfoList = new ArrayList<>();
 
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false)
     private double totalExpenses; //= calculateTotalExpenses();
 
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false)
     private double totalIncome; // = calculateTotalIncome();
 
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false)
     private double totalLeftOver;
 
     @Builder
-    public Payment(UUID id, List<PaymentInfo> paymentInfoList, double totalExpenses, double totalIncome, double totalLeftOver) {
+    public Payment(UUID id, User user, List<PaymentInfo> paymentInfoList, double totalExpenses, double totalIncome, double totalLeftOver) {
         super(id);
+        this.user = user;
         this.paymentInfoList = paymentInfoList;
         this.totalExpenses = totalExpenses;
         this.totalIncome = totalIncome;
