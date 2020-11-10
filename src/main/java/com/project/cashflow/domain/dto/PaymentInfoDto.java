@@ -30,6 +30,10 @@ public class PaymentInfoDto {
     @Range(min = 0, message = "Expenses cannot be less than 0")
     private double totalExpenses;
 
+    private double sharedExpenses;
+
+    private double myExpenses;
+
     private double leftOver;
 
     @Builder
@@ -37,7 +41,9 @@ public class PaymentInfoDto {
                           List<Bill> payedBills,
                           double income,
                           double totalExpenses,
-                          double leftOver) {
+                          double leftOver,
+                          double sharedExpenses,
+                          double myExpenses) {
         this.id = id;
         this.member = member.convertToDto();
         this.payedBills = payedBills.stream()
@@ -46,6 +52,8 @@ public class PaymentInfoDto {
         this.income = income;
         this.totalExpenses = totalExpenses;
         this.leftOver = leftOver;
+        this.sharedExpenses = sharedExpenses;
+        this.myExpenses = myExpenses;
     }
 
     public PaymentInfo convertToEntity() {
@@ -58,6 +66,8 @@ public class PaymentInfoDto {
                         .collect(Collectors.toList())
                 )
                 .income(this.income)
+                .myExpenses(this.myExpenses)
+                .sharedExpenses(this.sharedExpenses)
                 .totalExpenses(this.totalExpenses)
                 .leftOver(this.leftOver)
                 .build();

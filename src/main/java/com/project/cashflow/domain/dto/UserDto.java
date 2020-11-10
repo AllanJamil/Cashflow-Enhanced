@@ -6,15 +6,18 @@ import com.project.cashflow.domain.User;
 import com.project.cashflow.validator.ValidPassword;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class UserDto {
 
     @Email
@@ -24,9 +27,9 @@ public class UserDto {
     private String password;
 
     @Size(max = 10, message = "Can't save more than 10 members")
-    private List<MemberDto> members;
+    private List<MemberDto> members = new ArrayList<>();
 
-    private List<PaymentDto> payments;
+    private List<PaymentDto> payments = new ArrayList<>();
 
 
     @Builder

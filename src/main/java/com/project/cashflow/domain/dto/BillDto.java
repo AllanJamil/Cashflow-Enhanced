@@ -20,7 +20,7 @@ public class BillDto {
     private String name;
 
     @Range(min = 1, message = "Bill total must have a value above 0")
-    private double total = 0;
+    private double total;
 
     private String note;
 

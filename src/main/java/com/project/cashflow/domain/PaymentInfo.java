@@ -38,7 +38,13 @@ public class PaymentInfo extends BaseEntity{
     private double totalExpenses = 0;
 
     @Column(nullable = false, updatable = false)
+    private double sharedExpenses = 0;
+
+    @Column(nullable = false, updatable = false)
     private double leftOver = 0;
+
+    @Column(nullable = false, updatable = false)
+    private double myExpenses;
 
     @Builder
     public PaymentInfo(UUID id,
@@ -47,7 +53,9 @@ public class PaymentInfo extends BaseEntity{
                        Payment payment,
                        double income,
                        double totalExpenses,
-                       double leftOver) {
+                       double leftOver,
+                       double sharedExpenses,
+                       double myExpenses) {
         super(id);
         this.member = member;
         this.payedBills = payedBills;
@@ -55,6 +63,8 @@ public class PaymentInfo extends BaseEntity{
         this.income = income;
         this.totalExpenses = totalExpenses;
         this.leftOver = leftOver;
+        this.sharedExpenses = sharedExpenses;
+        this.myExpenses = myExpenses;
     }
 
     public PaymentInfoDto convertToDto() {
@@ -63,6 +73,8 @@ public class PaymentInfo extends BaseEntity{
                 .member(this.member)
                 .payedBills(this.payedBills)
                 .income(this.income)
+                .myExpenses(this.myExpenses)
+                .sharedExpenses(this.sharedExpenses)
                 .totalExpenses(this.totalExpenses)
                 .leftOver(this.leftOver)
                 .build();

@@ -40,13 +40,15 @@ public class PaymentService {
                         .orElseThrow(() -> new EntityNotFoundException("Cannot find bill with id:" + bill.getId()));
             }
 
-            double totalExpenses = paymentInfo.getPayedBills().stream()
+            double myExpenses = paymentInfo.getPayedBills().stream()
                     .mapToDouble(Bill::getTotal)
                     .sum();
 
-            paymentInfo.setTotalExpenses(totalExpenses);
+            paymentInfo.setMyExpenses(myExpenses);
 
             if (paymentInfo.getMember().getName().equalsIgnoreCase("HOUSEHOLD")) {
+                paymentInfo.setTotalExpenses(paymentInfo.getMyExpenses());
+                paymentInfo.setMyExpenses(0);
                 HOUSEHOLD_EXPENSES = paymentInfo.getTotalExpenses() / ((double) paymentInfos.size() - 1);
             }
         }
@@ -55,7 +57,8 @@ public class PaymentService {
         double sharedExpense = HOUSEHOLD_EXPENSES;
         paymentInfos.forEach(paymentInfo -> {
             if (!paymentInfo.getMember().getName().equalsIgnoreCase("HOUSEHOLD")) {
-                paymentInfo.setTotalExpenses(paymentInfo.getTotalExpenses() + sharedExpense);
+                paymentInfo.setSharedExpenses(sharedExpense);
+                paymentInfo.setTotalExpenses(paymentInfo.getMyExpenses() + sharedExpense);
                 paymentInfo.setLeftOver(paymentInfo.getIncome() - paymentInfo.getTotalExpenses());
             }
         });

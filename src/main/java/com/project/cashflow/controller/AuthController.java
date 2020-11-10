@@ -7,12 +7,14 @@ import com.project.cashflow.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
+import java.util.Collections;
 
 @RequiredArgsConstructor
 @RestController
@@ -24,16 +26,13 @@ public class AuthController {
     @PostMapping("signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserDto userDto) {
 
+        userDto.setMembers(Collections.emptyList());
+        userDto.setPayments(Collections.emptyList());
         try {
             User newUser = authService.createUser(userDto.convertToEntity());
             return ResponseEntity.ok(newUser.convertToDto());
         } catch (EntityExistsException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
-    }
-
-    @GetMapping
-    public void redirectToGoogle(HttpServletResponse response) throws IOException {
-        response.sendRedirect("www.google.com");
     }
 }

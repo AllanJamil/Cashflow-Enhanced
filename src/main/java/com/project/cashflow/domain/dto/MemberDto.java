@@ -4,15 +4,18 @@ import com.project.cashflow.domain.Bill;
 import com.project.cashflow.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class MemberDto {
 
     private UUID id;
@@ -21,7 +24,7 @@ public class MemberDto {
     private String name;
 
     @Size(max = 50, message = "Member cannot have more than 50 bills")
-    private List<BillDto> bills;
+    private List<BillDto> bills = new ArrayList<>();
 
     @Builder
     public MemberDto(UUID id, String name, List<Bill> bills) {
