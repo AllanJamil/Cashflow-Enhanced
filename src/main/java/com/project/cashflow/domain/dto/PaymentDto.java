@@ -1,7 +1,7 @@
 package com.project.cashflow.domain.dto;
 
 import com.project.cashflow.domain.Payment;
-import com.project.cashflow.domain.PaymentInfo;
+import com.project.cashflow.domain.PaymentDetails;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +18,7 @@ public class PaymentDto {
 
     private UUID id;
 
-    private List<PaymentInfoDto> paymentInfoList;
+    private List<PaymentDetailsDto> paymentDetailsList;
 
     @Positive
     @Range(min = 0, message = "Income cannot be negative")
@@ -30,14 +30,14 @@ public class PaymentDto {
     private double totalLeftOver;
 
     @Builder
-    public PaymentDto(UUID id, List<PaymentInfo> paymentInfoList,
+    public PaymentDto(UUID id, List<PaymentDetails> paymentDetailsList,
                       double totalIncome,
                       double totalExpenses,
                       double totalLeftOver) {
         this.id = id;
-        this.paymentInfoList = paymentInfoList
+        this.paymentDetailsList = paymentDetailsList
                 .stream()
-                .map(PaymentInfo::convertToDto)
+                .map(PaymentDetails::convertToDto)
                 .collect(Collectors.toList());
         this.totalIncome = totalIncome;
         this.totalExpenses = totalExpenses;
@@ -47,9 +47,9 @@ public class PaymentDto {
     public Payment convertToEntity() {
         return Payment.builder()
                 .id(this.id)
-                .paymentInfoList(this.paymentInfoList
+                .paymentDetailsList(this.paymentDetailsList
                         .stream()
-                        .map(PaymentInfoDto::convertToEntity)
+                        .map(PaymentDetailsDto::convertToEntity)
                         .collect(Collectors.toList())
                 )
                 .totalIncome(this.totalIncome)

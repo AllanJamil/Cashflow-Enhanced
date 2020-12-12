@@ -2,7 +2,7 @@ package com.project.cashflow.domain.dto;
 
 import com.project.cashflow.domain.Bill;
 import com.project.cashflow.domain.Member;
-import com.project.cashflow.domain.PaymentInfo;
+import com.project.cashflow.domain.PaymentDetails;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class PaymentInfoDto {
+public class PaymentDetailsDto {
 
     private UUID id;
 
@@ -37,13 +37,13 @@ public class PaymentInfoDto {
     private double leftOver;
 
     @Builder
-    public PaymentInfoDto(UUID id, Member member,
-                          List<Bill> payedBills,
-                          double income,
-                          double totalExpenses,
-                          double leftOver,
-                          double sharedExpenses,
-                          double myExpenses) {
+    public PaymentDetailsDto(UUID id, Member member,
+                             List<Bill> payedBills,
+                             double income,
+                             double totalExpenses,
+                             double leftOver,
+                             double sharedExpenses,
+                             double myExpenses) {
         this.id = id;
         this.member = member.convertToDto();
         this.payedBills = payedBills.stream()
@@ -56,8 +56,8 @@ public class PaymentInfoDto {
         this.myExpenses = myExpenses;
     }
 
-    public PaymentInfo convertToEntity() {
-        return PaymentInfo.builder()
+    public PaymentDetails convertToEntity() {
+        return PaymentDetails.builder()
                 .id(this.id)
                 .member(this.member.convertToEntity())
                 .payedBills(this.payedBills

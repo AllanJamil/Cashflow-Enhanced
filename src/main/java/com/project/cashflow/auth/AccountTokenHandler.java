@@ -1,6 +1,8 @@
-package com.project.cashflow.domain;
+package com.project.cashflow.auth;
 
 
+import com.project.cashflow.domain.Token;
+import com.project.cashflow.domain.User;
 import com.project.cashflow.service.EmailService;
 import com.project.cashflow.service.TokenService;
 import lombok.RequiredArgsConstructor;

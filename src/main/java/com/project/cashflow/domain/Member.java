@@ -29,17 +29,17 @@ public class Member extends BaseEntity {
     private List<Bill> bills = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL, mappedBy = "member")
-    private List<PaymentInfo> paymentInfoList = new ArrayList<>();
+    private List<PaymentDetails> paymentDetailsList = new ArrayList<>();
 
     @ManyToOne
     private User user;
 
     @Builder
-    public Member(UUID id, String name, List<Bill> bills, List<PaymentInfo> paymentInfoList, User user) {
+    public Member(UUID id, String name, List<Bill> bills, List<PaymentDetails> paymentDetailsList, User user) {
         super(id);
         this.name = name;
         this.bills = bills;
-        this.paymentInfoList = paymentInfoList;
+        this.paymentDetailsList = paymentDetailsList;
         this.user = user;
     }
 

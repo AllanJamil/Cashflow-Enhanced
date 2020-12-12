@@ -1,6 +1,6 @@
 package com.project.cashflow.domain;
 
-import com.project.cashflow.domain.dto.PaymentInfoDto;
+import com.project.cashflow.domain.dto.PaymentDetailsDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +16,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @Table(name = "paymentinfos")
-public class PaymentInfo extends BaseEntity{
+public class PaymentDetails extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(nullable = false, updatable = false)
@@ -47,15 +47,15 @@ public class PaymentInfo extends BaseEntity{
     private double myExpenses;
 
     @Builder
-    public PaymentInfo(UUID id,
-                       Member member,
-                       List<Bill> payedBills,
-                       Payment payment,
-                       double income,
-                       double totalExpenses,
-                       double leftOver,
-                       double sharedExpenses,
-                       double myExpenses) {
+    public PaymentDetails(UUID id,
+                          Member member,
+                          List<Bill> payedBills,
+                          Payment payment,
+                          double income,
+                          double totalExpenses,
+                          double leftOver,
+                          double sharedExpenses,
+                          double myExpenses) {
         super(id);
         this.member = member;
         this.payedBills = payedBills;
@@ -67,8 +67,8 @@ public class PaymentInfo extends BaseEntity{
         this.myExpenses = myExpenses;
     }
 
-    public PaymentInfoDto convertToDto() {
-        return PaymentInfoDto.builder()
+    public PaymentDetailsDto convertToDto() {
+        return PaymentDetailsDto.builder()
                 .id(this.getId())
                 .member(this.member)
                 .payedBills(this.payedBills)

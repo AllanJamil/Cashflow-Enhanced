@@ -42,7 +42,7 @@ public class Bill extends BaseEntity{
     private Member member;
 
     @ManyToMany(mappedBy = "payedBills")
-    private List<PaymentInfo> paymentInfoList = new ArrayList<>();
+    private List<PaymentDetails> paymentDetailsList = new ArrayList<>();
 
     @Builder
     public Bill(UUID id, String name, double total, String note,

@@ -40,7 +40,7 @@ public class EmailService {
     public void sendEmailConfirmation(String email, String token) {
         Mail mail = new Mail();
         mail.setFrom(new Email("cashflow.reg@gmail.com"));
-        mail.setTemplateId("d-2376f7b4c8fb4420b237af1c2078db94");
+        mail.setTemplateId("d-501baad3f77d40de82472cfbccdca590");
 
         Personalization personalization = new Personalization();
         personalization.addDynamicTemplateData("VERIFY_URL", "url" + token);

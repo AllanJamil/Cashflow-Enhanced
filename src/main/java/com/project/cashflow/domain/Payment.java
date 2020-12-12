@@ -24,7 +24,7 @@ public class Payment extends BaseEntity {
     private User user;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "payment")
-    private List<PaymentInfo> paymentInfoList = new ArrayList<>();
+    private List<PaymentDetails> paymentDetailsList = new ArrayList<>();
 
     @Column(nullable = false)
     private double totalExpenses; //= calculateTotalExpenses();
@@ -36,10 +36,10 @@ public class Payment extends BaseEntity {
     private double totalLeftOver;
 
     @Builder
-    public Payment(UUID id, User user, List<PaymentInfo> paymentInfoList, double totalExpenses, double totalIncome, double totalLeftOver) {
+    public Payment(UUID id, User user, List<PaymentDetails> paymentDetailsList, double totalExpenses, double totalIncome, double totalLeftOver) {
         super(id);
         this.user = user;
-        this.paymentInfoList = paymentInfoList;
+        this.paymentDetailsList = paymentDetailsList;
         this.totalExpenses = totalExpenses;
         this.totalIncome = totalIncome;
         this.totalLeftOver = totalLeftOver;
@@ -48,7 +48,7 @@ public class Payment extends BaseEntity {
     public PaymentDto convertToDto() {
         return PaymentDto.builder()
                 .id(this.getId())
-                .paymentInfoList(this.paymentInfoList)
+                .paymentDetailsList(this.paymentDetailsList)
                 .totalIncome(this.totalIncome)
                 .totalExpenses(this.totalExpenses)
                 .totalLeftOver(this.totalLeftOver)

@@ -31,7 +31,6 @@ public class UserDto {
 
     private List<PaymentDto> payments = new ArrayList<>();
 
-
     @Builder
     public UserDto(String email,
                    String password,

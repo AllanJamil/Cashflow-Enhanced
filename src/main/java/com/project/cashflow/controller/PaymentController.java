@@ -1,9 +1,9 @@
 package com.project.cashflow.controller;
 
 import com.project.cashflow.domain.Payment;
-import com.project.cashflow.domain.PaymentInfo;
+import com.project.cashflow.domain.PaymentDetails;
 import com.project.cashflow.domain.dto.PaymentDto;
-import com.project.cashflow.domain.dto.PaymentInfoDto;
+import com.project.cashflow.domain.dto.PaymentDetailsDto;
 import com.project.cashflow.exception.EntityNotFoundException;
 import com.project.cashflow.service.PaymentService;
 import lombok.RequiredArgsConstructor;
@@ -30,13 +30,13 @@ public class PaymentController {
     }
 
     @PostMapping("create-payment")
-    public PaymentDto makePayment(@Valid @RequestBody List<PaymentInfoDto> paymentInfoDtos) {
-        List<PaymentInfo> payments = paymentInfoDtos.stream()
-                .map(PaymentInfoDto::convertToEntity)
+    public PaymentDto makePayment(@Valid @RequestBody List<PaymentDetailsDto> paymentDetailsDtos) {
+        List<PaymentDetails> paymentDetails = paymentDetailsDtos.stream()
+                .map(PaymentDetailsDto::convertToEntity)
                 .collect(Collectors.toList());
 
         try {
-             return paymentService.createPayment(payments)
+             return paymentService.createPayment(paymentDetails)
                      .convertToDto();
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());

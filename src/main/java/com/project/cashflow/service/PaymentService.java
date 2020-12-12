@@ -22,40 +22,40 @@ public class PaymentService {
     private final PaymentInfoRepository paymentInfoRepository;
 
 
-    public Payment createPayment(@Valid List<PaymentInfo> paymentInfos) throws EntityNotFoundException {
+    public Payment createPayment(@Valid List<PaymentDetails> paymentDetails) throws EntityNotFoundException {
         String email = CurrentRequest.getUserEmail();
 
         //foreach paymentInfo we have to check if
         //every member truly is connected to the user
         //then check if bills is truly connected to the member
         double HOUSEHOLD_EXPENSES = 0;
-        for (PaymentInfo paymentInfo: paymentInfos) {
+        for (PaymentDetails paymentDetail : paymentDetails) {
 
-            UUID memberId = paymentInfo.getMember().getId();
+            UUID memberId = paymentDetail.getMember().getId();
             Member member = memberRepository.findByIdAndUser_Email(memberId, email)
                     .orElseThrow(() -> new EntityNotFoundException("Cannot find member with id:" + memberId));
 
-            for (Bill bill: paymentInfo.getPayedBills()) {
+            for (Bill bill: paymentDetail.getPayedBills()) {
                 billRepository.findByIdAndMember_Id(bill.getId(), memberId)
                         .orElseThrow(() -> new EntityNotFoundException("Cannot find bill with id:" + bill.getId()));
             }
 
-            double myExpenses = paymentInfo.getPayedBills().stream()
+            double myExpenses = paymentDetail.getPayedBills().stream()
                     .mapToDouble(Bill::getTotal)
                     .sum();
 
-            paymentInfo.setMyExpenses(myExpenses);
+            paymentDetail.setMyExpenses(myExpenses);
 
-            if (paymentInfo.getMember().getName().equalsIgnoreCase("HOUSEHOLD")) {
-                paymentInfo.setTotalExpenses(paymentInfo.getMyExpenses());
-                paymentInfo.setMyExpenses(0);
-                HOUSEHOLD_EXPENSES = paymentInfo.getTotalExpenses() / ((double) paymentInfos.size() - 1);
+            if (paymentDetail.getMember().getName().equalsIgnoreCase("HOUSEHOLD")) {
+                paymentDetail.setTotalExpenses(paymentDetail.getMyExpenses());
+                paymentDetail.setMyExpenses(0);
+                HOUSEHOLD_EXPENSES = paymentDetail.getTotalExpenses() / ((double) paymentDetails.size() - 1);
             }
         }
 
 
         double sharedExpense = HOUSEHOLD_EXPENSES;
-        paymentInfos.forEach(paymentInfo -> {
+        paymentDetails.forEach(paymentInfo -> {
             if (!paymentInfo.getMember().getName().equalsIgnoreCase("HOUSEHOLD")) {
                 paymentInfo.setSharedExpenses(sharedExpense);
                 paymentInfo.setTotalExpenses(paymentInfo.getMyExpenses() + sharedExpense);
@@ -72,36 +72,36 @@ public class PaymentService {
 
         Payment savedPayment = paymentRepository.save(payment);
 
-        paymentInfos.forEach(paymentInfo -> paymentInfo.setPayment(savedPayment));
+        paymentDetails.forEach(paymentInfo -> paymentInfo.setPayment(savedPayment));
 
-        double totalIncome = paymentInfos.stream()
+        double totalIncome = paymentDetails.stream()
                 .filter(paymentInfo ->
             !paymentInfo.getMember().getName().equalsIgnoreCase("HOUSEHOLD")
-        ).mapToDouble(PaymentInfo::getIncome).sum();
+        ).mapToDouble(PaymentDetails::getIncome).sum();
 
-        double totalExpenses = paymentInfos.stream()
+        double totalExpenses = paymentDetails.stream()
                 .filter(paymentInfo ->
                 !paymentInfo.getMember().getName().equalsIgnoreCase("HOUSEHOLD")
-        ).mapToDouble(PaymentInfo::getTotalExpenses).sum();
+        ).mapToDouble(PaymentDetails::getTotalExpenses).sum();
 
-        double totalLeftOver = paymentInfos.stream()
+        double totalLeftOver = paymentDetails.stream()
                 .filter(paymentInfo ->
                 !paymentInfo.getMember().getName().equalsIgnoreCase("HOUSEHOLD")
-        ).mapToDouble(PaymentInfo::getLeftOver).sum();
+        ).mapToDouble(PaymentDetails::getLeftOver).sum();
 
         savedPayment.setTotalIncome(totalIncome);
         savedPayment.setTotalExpenses(totalExpenses);
         savedPayment.setTotalLeftOver(totalLeftOver);
 
-        List<PaymentInfo> paymentInfosFromDB = new ArrayList<>();
-        paymentInfos.forEach(paymentInfo -> {
-            PaymentInfo piSaved = paymentInfoRepository.save(paymentInfo);
+        List<PaymentDetails> paymentInfosFromDB = new ArrayList<>();
+        paymentDetails.forEach(paymentInfo -> {
+            PaymentDetails piSaved = paymentInfoRepository.save(paymentInfo);
             paymentInfosFromDB.add(piSaved);
         });
 
 
         Payment paymentUpdated = paymentRepository.save(savedPayment);
-        paymentUpdated.setPaymentInfoList(paymentInfosFromDB);
+        paymentUpdated.setPaymentDetailsList(paymentInfosFromDB);
         return paymentUpdated;
     }
 
