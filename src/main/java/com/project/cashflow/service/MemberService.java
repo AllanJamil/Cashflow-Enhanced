@@ -36,10 +36,10 @@ public class MemberService {
         if (optionalMember.isPresent())
             throw new EntityExistsException("Cannot add a duplicate member. Name must be unique.");
 
-        if (members.size() == 11)
+        if (members.size() == 11) //TODO I would break down everything into small methods and then call each tiny method with their appropriately set names Nice work with the length of the methods !:) A method should never be more than 15-30 lines long. Some cases max 50 but I honestly think it is way too much!
             throw new TooManyMembersException();
 
-        User user = this.userRepository.findByEmail(email)
+        User user = this.userRepository.findByEmail(email)      //TODO I would encapsulate this to a User getUserByEmail() etc., this makes the code more easier and consice to read.
                 .orElseThrow(() -> new EntityNotFoundException("User not found."));
 
         member.setUser(user);
